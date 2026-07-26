@@ -66,6 +66,13 @@ DocIntelAI/
 | GET | /documents/{id} | Retrieve a document by ID |
 
 ---
+## API Documentation
+
+The project provides interactive API documentation using FastAPI's built-in Swagger UI.
+
+### Swagger Interface
+
+![Swagger UI](images/swagger-ui.png)
 
 ## Future Improvements
 
