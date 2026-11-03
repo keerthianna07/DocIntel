@@ -5,6 +5,7 @@ from fastapi import HTTPException
 
 import logging
 import sqlite3
+from database.postgres_db import get_connection
 
 import shutil
 app = FastAPI()
@@ -23,7 +24,7 @@ logger = logging.getLogger(__name__)
     tags=["Documents"]
 )
 def get_documents():
-    connection = sqlite3.connect("database/documents.db")
+    connection = get_connection()
 
     cursor = connection.cursor()
 
@@ -58,12 +59,12 @@ def get_documents():
 )
 def get_document(document_id: int):
 
-    connection = sqlite3.connect("database/documents.db")
+    connection = get_connection()
 
     cursor = connection.cursor()
 
     cursor.execute(
-        "SELECT * FROM documents WHERE id = ?",
+        "SELECT * FROM documents WHERE id = %s",
         (document_id,)
     )
 
@@ -134,13 +135,12 @@ def upload(file: UploadFile = File(...)):
 
     logger.info(f"Processed document: {file.filename}")
 
-    connection = sqlite3.connect("database/documents.db")
-
+    connection = get_connection()
     cursor = connection.cursor()
 
     cursor.execute("""
                    INSERT INTO documents(filename, pages, words, summary)
-                   VALUES (?, ?, ?, ?)
+                   VALUES (%s, %s, %s, %s)
                    """, (
                        file.filename,
                        pages,
